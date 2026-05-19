@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Camarote Eventos — Painel
 
-## Getting Started
+Sistema de gestão de eventos e camarotes VIP da Camarote Shows.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind CSS 4
+
+## Desenvolvimento local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre em [http://localhost:3000](http://localhost:3000) (ou outra porta se a 3000 estiver ocupada).
+O home `/` redireciona para `/login`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build de produção
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Estrutura
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+├── app/
+│   ├── login/page.tsx       # Tela de login
+│   ├── layout.tsx           # Root layout (dark theme)
+│   ├── page.tsx             # Home → redirect /login
+│   └── globals.css          # Tailwind + animações custom
+├── public/
+│   ├── logo.jpg             # Logo Camarote Shows
+│   └── hero-bg.jpg          # Background do painel lateral
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy na Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Opção 1 — Vercel CLI (mais rápido)
 
-## Deploy on Vercel
+```bash
+npm i -g vercel
+vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Da primeira vez, ele pergunta:
+- Set up and deploy? **Y**
+- Scope (sua conta) → confirmar
+- Link to existing project? **N**
+- Project name → `camarote-eventos` (ou outro)
+- Diretório → **.** (raiz do projeto)
+- Override settings? **N** (defaults do Next.js já funcionam)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Resultado: URL `*.vercel.app` em ~1 min. Para produção:
+
+```bash
+vercel --prod
+```
+
+### Opção 2 — GitHub + Vercel Dashboard
+
+1. Criar repositório no GitHub e fazer push:
+   ```bash
+   gh repo create camarote-eventos --private --source=. --push
+   # ou manualmente:
+   # git remote add origin git@github.com:USUARIO/camarote-eventos.git
+   # git push -u origin main
+   ```
+2. Acessar [vercel.com/new](https://vercel.com/new) e importar o repositório.
+3. Vercel detecta Next.js automaticamente — clicar em **Deploy**.
+
+### Variáveis de ambiente
+
+Por enquanto não há ENV vars (a tela de login é apenas UI; autenticação real entra na próxima fase). Quando integrar Supabase e Mercado Pago, adicionar no painel Vercel:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+MERCADOPAGO_ACCESS_TOKEN=
+RESEND_API_KEY=
+TICKET_HMAC_SECRET=
+```
+
+## Próximas fases
+
+Ver plano completo em `/Users/joaoalisson/.claude/plans/leia-o-md-me-sparkling-eclipse.md` e proposta comercial em `../PROPOSTA_COMERCIAL.md`.
+
+- **Fase 1:** Vitrine pública + checkout PIX
+- **Fase 2:** Painel admin + dashboard financeiro + cartão de crédito
+- **Fase 3:** Promoter rastreado + portaria (PWA + scanner QR)
+- **Fase 4:** Polimento, LGPD, runbook
